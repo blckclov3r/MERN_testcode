@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { setUserAction } from '../feature/workoutSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { getStatus, setStatus, setWorkout } from '../feature/workoutSlice';
 export default function WorkoutForm() {
 
   const [title,setTitle] = useState('');
@@ -10,35 +10,31 @@ export default function WorkoutForm() {
   const [error, setError] = useState(null);
 
   const dispatch = useDispatch();
+  const status = useSelector(getStatus);
 
   const handleWorkoutSubmit = async (evt) =>{
     evt.preventDefault();
-    
+
     const workout = {title, load, reps}
-
-    try{
- 
-
-        await axios.post('/api/workouts/',workout)
-        .then(res => {
-            dispatch(setUserAction('create'));
-            return res?.data
-        });
-
-  
-
-        setTitle('')
-        setLoad('')
-        setReps('')
-        setError(null);
-
-    }catch(err){
-        setError(err.message)
-        return;
-    }
-
    
+        dispatch(setStatus('loading'));
+        await axios.post('/api/workouts/',workout).then((res)=>{
+            dispatch(setWorkout(
+                res.data
+            ));
+            dispatch(setStatus('success'));
+            setTitle('')
+            setLoad('')
+            setReps('')
+            setError(null);
+        }).catch((err)=>{
+            dispatch(setStatus('error'));
+            setError(err);
+        }).finally(()=>{
+            dispatch(setStatus('idle'));
+        })
   }
+  const validate = [title,load,reps].every(Boolean);
 
   return (
     <>
@@ -49,14 +45,14 @@ export default function WorkoutForm() {
             </div>
             <div className='form-group mb-3'>
                 <label className='form-label'>Load</label>
-                <input type='number' className='form-control' value={load}  onChange={(e)=>setLoad(e.target.value)} placeholder='Load'  />
+                <input type='number' className='form-control' value={load}   onChange={(e)=>setLoad(e.target.value)} placeholder='Load'  />
             </div>
             <div className='form-group mb-4'>
                 <label className='form-label'>Reps</label>
-                <input type='number' className='form-control' value={reps}  onChange={(e)=>setReps(e.target.value)} placeholder='Reps'  />
+                <input type='number' className='form-control' value={reps}   onChange={(e)=>setReps(e.target.value)} placeholder='Reps'  />
             </div>
             <div className='d-flex justify-content-end'>
-            <button className='btn btn-primary'>Submit</button>
+            <button className='btn btn-primary' disabled={!validate || status === 'loading'} >Add +</button>
             </div>
         </form>
         <br/>

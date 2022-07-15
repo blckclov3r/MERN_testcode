@@ -1,15 +1,27 @@
 import React from 'react'
 import axios from 'axios';
 
-import {useDispatch} from 'react-redux';
-import { setUserAction } from '../feature/workoutSlice';
+import {useDispatch,useSelector} from 'react-redux';
+import { deleteWorkout, getStatus, setStatus } from '../feature/workoutSlice';
 
 
 export default function WorkoutDetails({workout}) {
+
     const dispatch = useDispatch();
+    const status = useSelector(getStatus);
+
     const deleteWorkoutBtn = async () => {
-        await axios.delete('/api/workouts/'+workout._id);
-        dispatch(setUserAction('delete'));
+
+         dispatch(setStatus('loading'));
+
+         await axios.delete('/api/workouts/'+workout._id)
+          .then(()=>{
+            dispatch(deleteWorkout(workout._id));
+            dispatch(setStatus('success'));
+          }).finally(()=>{
+            dispatch(setStatus('idle'));
+          })
+       
     }
 
   return (
@@ -17,9 +29,10 @@ export default function WorkoutDetails({workout}) {
         <h3>{workout.title}</h3>
         <p className='mb-1'><strong>Load (kg): </strong>{workout.load}</p>
         <p className='mb-1'><strong>Reps: </strong>{workout.reps}</p>
-        <p className='mb-3'><strong>Date Created: </strong>{workout.createdAt}</p>
-        <div className='d-flex justify-content-end'>
-        <button className='btn btn-danger' onClick={deleteWorkoutBtn}>Delete</button>
+
+        <div className='d-flex justify-content-between align-items-end'>
+        <p className='mb-0'>{workout.createdAt}</p>
+        <button className='btn btn-danger' onClick={deleteWorkoutBtn} disabled={status === 'loading'}>Delete</button>
         </div>
     </div>
   )

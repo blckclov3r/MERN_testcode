@@ -22,6 +22,11 @@ app.use((req,res,next)=>{
 // routes
 app.use("/api/workouts",workoutRoutes);
 
+
+// dotenv example
+// PORT=4000
+// MONGO_URI = mongodb+srv://username:password@admin.2b5tk.mongodb.net/?retryWrites=true&w=majority
+
 mongoose.connect(process.env.MONGO_URI)
     .then(()=>{
         app.listen(process.env.PORT,()=>{
