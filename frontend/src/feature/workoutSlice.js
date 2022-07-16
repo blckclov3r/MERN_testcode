@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
+    id: null,
     data: null,
     status: null,
 }
@@ -28,6 +29,31 @@ export const workoutSlice = createSlice({
         deleteWorkout: (state,action)=>{
             const workouts = state.data?.filter((workout)=>workout._id !== action.payload);
             state.data = workouts;
+        },
+        updateWorkout: (state,action)=>{
+
+            const {_id,title,load,reps} = action.payload
+            state.status = 'loading';
+            try{
+                state.data.filter((workout)=>{
+                    return workout._id === _id;
+                }).forEach((workout)=>{
+                    workout.title = title;
+                    workout.load = load;
+                    workout.reps = reps;
+                    workout = action.payload
+                });
+                state.status = 'success';
+            }catch(e){
+                console.log('updateWorkout',e);
+                state.status = 'error';
+            }finally{
+                state.status = 'idle';
+            }
+         
+        },
+        setWorkoutId: (state,action)=>{
+            state.id = action.payload;
         }
     },
     extraReducers(builder){
@@ -50,5 +76,7 @@ export const getFetchWorkout = (state) => state.workout.data;
 
 export const getStatus = (state) =>state.workout.status;
 
-export const {setWorkout,deleteWorkout,setStatus} = workoutSlice.actions
+export const getWorkoutId = (state) =>state.workout.id;
+
+export const {setWorkout,deleteWorkout,setStatus,setWorkoutId,updateWorkout} = workoutSlice.actions
 export default workoutSlice.reducer;

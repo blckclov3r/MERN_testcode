@@ -59,12 +59,13 @@ const updateWorkout = async (req,res)=>{
         if(!mongoose.Types.ObjectId.isValid(id)){
             return res.status(404).json({err: 'No such workout to update'})
         }
-
+     
         const workout = await Workout.findOneAndUpdate({_id: id},{
             // second argument === ...req.body
-            title: req.body.title,
-            preps: req.body.preps,
-            load: req.body.load
+            ...req.body
+            // title: req.body.title,
+            // preps: req.body.preps,
+            // load: req.body.load
             
         });
         if(!workout){

@@ -3,6 +3,7 @@ import workoutReducer from './../feature/workoutSlice';
 
 export const store = configureStore({
     reducer: {
-        workout: workoutReducer
+        workout: workoutReducer,
+        
     }
 });

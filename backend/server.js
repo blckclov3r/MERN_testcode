@@ -23,7 +23,8 @@ app.use((req,res,next)=>{
 app.use("/api/workouts",workoutRoutes);
 
 
-// dotenv example
+// dotenv example  
+
 // PORT=4000
 // MONGO_URI = mongodb+srv://username:password@admin.2b5tk.mongodb.net/?retryWrites=true&w=majority
 
