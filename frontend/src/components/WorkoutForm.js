@@ -41,15 +41,15 @@ export default function WorkoutForm() {
         <form onSubmit={handleWorkoutSubmit}>
             <div className='form-group mb-3'>
                 <label className='form-label'>Title</label>
-                <input type='text' className='form-control' value={title}  onChange={(e)=>{setTitle(e.target.value)}} placeholder='Title'  />
+                <input type='text' className='form-control' value={title}  onChange={(e)=>{setTitle(e.target.value)}} placeholder=''  />
             </div>
             <div className='form-group mb-3'>
                 <label className='form-label'>Load</label>
-                <input type='number' className='form-control' value={load}   onChange={(e)=>setLoad(e.target.value)} placeholder='Load'  />
+                <input type='number' className='form-control' value={load}   onChange={(e)=>setLoad(e.target.value)} placeholder=''  />
             </div>
             <div className='form-group mb-4'>
                 <label className='form-label'>Reps</label>
-                <input type='number' className='form-control' value={reps}   onChange={(e)=>setReps(e.target.value)} placeholder='Reps'  />
+                <input type='number' className='form-control' value={reps}   onChange={(e)=>setReps(e.target.value)} placeholder=''  />
             </div>
             <div className='d-flex justify-content-end'>
             <button className='btn btn-primary' disabled={!validate || status === 'loading'} >Add +</button>
