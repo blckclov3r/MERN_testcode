@@ -1,3 +1,4 @@
+const path = require('path');
 require('dotenv').config();
 
 const express = require('express');
@@ -19,6 +20,16 @@ app.use((req,res,next)=>{
 
 // routes
 app.use("/api/workouts",workoutRoutes);
+
+// serve frontend
+if(process.env.NODE_ENV === 'production'){
+    app.use(express.static(path.join(__dirname,'../frontend/build')))
+    app.get('*',(req,res)=>{
+        return res.sendFile(    path.resolve(__dirname, '../', 'frontend', 'build', 'index.html'))
+    })
+}else{
+    app.get('/',(req,res)=>res.send('Please set to production'))
+}
 
 
 // dotenv example  
