@@ -17,8 +17,6 @@ app.use((req,res,next)=>{
 });
 
 
-
-
 // routes
 app.use("/api/workouts",workoutRoutes);
 
@@ -27,11 +25,12 @@ app.use("/api/workouts",workoutRoutes);
 
 // PORT=4000
 // MONGO_URI = mongodb+srv://username:password@admin.2b5tk.mongodb.net/?retryWrites=true&w=majority
+const port = process.env.PORT || 5000
 
 mongoose.connect(process.env.MONGO_URI)
     .then(()=>{
-        app.listen(process.env.PORT,()=>{
-            console.log("Listening port 4000!!!")
+        app.listen(port,()=>{
+            console.log(`RUNNING ON PORT ${port}`)
         })
     })
     .catch((error)=>{
