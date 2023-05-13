@@ -3,10 +3,16 @@
 import {Inter} from 'next/font/google'
 import createCache from "@emotion/cache";
 import {CacheProvider, EmotionCache} from "@emotion/react";
-import {CssBaseline, ThemeProvider} from "@mui/material";
+import {ThemeProvider} from "@mui/material";
 import theme from "@/lib/theme";
 import Header from './../components/Header'
 import Box from "@mui/material/Box";
+import {ApolloProvider, ApolloClient, InMemoryCache} from "@apollo/client";
+
+const client = new ApolloClient({
+    uri: 'http://localhost:8000/graphql',
+    cache: new InMemoryCache()
+})
 
 const inter = Inter({subsets: ['latin']})
 
@@ -25,16 +31,21 @@ export default function RootLayout({children}: {
         <html lang="en">
         <body className={inter.className}>
 
-        <main>
+        <>
             <Header/>
             <Box sx={{mt: 5, pt: 3}}>
-                <CacheProvider value={cache}>
-                    <ThemeProvider theme={theme}>
-                        {children}
-                    </ThemeProvider>
-                </CacheProvider>
+                <ApolloProvider client={client}>
+
+                    <CacheProvider value={cache}>
+                        <ThemeProvider theme={theme}>
+                            {children}
+                        </ThemeProvider>
+                    </CacheProvider>
+                </ApolloProvider>
+
             </Box>
-        </main>
+        </>
+
         </body>
         </html>
     )

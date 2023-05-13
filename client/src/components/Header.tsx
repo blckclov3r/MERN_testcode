@@ -1,7 +1,6 @@
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
@@ -27,7 +26,7 @@ const drawerWidth = 240;
 const navItems = ['Home', 'About', 'Contact'];
 
 export default function DrawerAppBar(props: Props) {
-    const { window } = props;
+    const {window} = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
 
     const handleDrawerToggle = () => {
@@ -35,16 +34,16 @@ export default function DrawerAppBar(props: Props) {
     };
 
     const drawer = (
-        <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-            <Typography variant="h6" sx={{ my: 2 }}>
+        <Box onClick={handleDrawerToggle} sx={{textAlign: 'center'}}>
+            <Typography variant="h6" sx={{my: 2}}>
                 MUI
             </Typography>
-            <Divider />
+            <Divider/>
             <List>
                 {navItems.map((item) => (
                     <ListItem key={item} disablePadding>
-                        <ListItemButton sx={{ textAlign: 'center' }}>
-                            <ListItemText primary={item} />
+                        <ListItemButton sx={{textAlign: 'center'}}>
+                            <ListItemText primary={item}/>
                         </ListItemButton>
                     </ListItem>
                 ))}
@@ -55,7 +54,7 @@ export default function DrawerAppBar(props: Props) {
     const container = window !== undefined ? () => window().document.body : undefined;
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{display: 'flex'}}>
             <AppBar component="nav">
                 <Container>
                     <Toolbar sx={{padding: '0px 0.5rem !important'}}>
@@ -64,20 +63,20 @@ export default function DrawerAppBar(props: Props) {
                             aria-label="open drawer"
                             edge="start"
                             onClick={handleDrawerToggle}
-                            sx={{ display: { sm: 'none' } }}
+                            sx={{display: {sm: 'none'}}}
                         >
-                            <MenuIcon />
+                            <MenuIcon/>
                         </IconButton>
                         <Typography
                             variant="h6"
                             component="div"
-                            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+                            sx={{flexGrow: 1, display: {xs: 'none', sm: 'block'}}}
                         >
-                            MUI
+                            PROJECT-MGMT
                         </Typography>
-                        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                        <Box sx={{display: {xs: 'none', sm: 'block'}}}>
                             {navItems.map((item) => (
-                                <Button key={item} sx={{ color: '#fff' }}>
+                                <Button key={item} sx={{color: '#fff'}}>
                                     {item}
                                 </Button>
                             ))}
@@ -95,8 +94,8 @@ export default function DrawerAppBar(props: Props) {
                         keepMounted: true, // Better open performance on mobile.
                     }}
                     sx={{
-                        display: { xs: 'block', sm: 'none' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                        display: {xs: 'block', sm: 'none'},
+                        '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth},
                     }}
                 >
                     {drawer}
