@@ -5,6 +5,8 @@ import createCache from "@emotion/cache";
 import {CacheProvider, EmotionCache} from "@emotion/react";
 import {CssBaseline, ThemeProvider} from "@mui/material";
 import theme from "@/lib/theme";
+import Header from './../components/Header'
+import Box from "@mui/material/Box";
 
 const inter = Inter({subsets: ['latin']})
 
@@ -22,14 +24,17 @@ export default function RootLayout({children}: {
     return (
         <html lang="en">
         <body className={inter.className}>
-        <>
-            <CacheProvider value={cache}>
-                <ThemeProvider theme={theme}>
-                    <CssBaseline/>
-                    {children}
-                </ThemeProvider>
-            </CacheProvider>
-        </>
+
+        <main>
+            <Header/>
+            <Box sx={{mt: 5, pt: 3}}>
+                <CacheProvider value={cache}>
+                    <ThemeProvider theme={theme}>
+                        {children}
+                    </ThemeProvider>
+                </CacheProvider>
+            </Box>
+        </main>
         </body>
         </html>
     )
