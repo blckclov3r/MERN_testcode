@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@apollo/client": "^3.7.14",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.13.0",
+    "graphql": "^16.6.0",
+    "react-icons": "^4.8.0",
+    "react-router-dom": "^6.11.1"
+  }
+}
