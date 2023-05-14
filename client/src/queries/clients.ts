@@ -10,9 +10,22 @@ const clients = () => {
             phone
           }
         }
-    `
+    `;
+    const DELETE_CLIENT = gql`
+        mutation deleteClient($id: ID!){
+            deleteClient(id: $id){
+                id
+                name
+                email
+                phone
+            }
+        }
+    `;
+
+
     return {
-        GET_CLIENTS
+        GET_CLIENTS,
+        DELETE_CLIENT,
     }
 }
 

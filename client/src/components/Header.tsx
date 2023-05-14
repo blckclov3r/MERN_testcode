@@ -57,7 +57,7 @@ export default function DrawerAppBar(props: Props) {
         <Box sx={{display: 'flex'}}>
             <AppBar component="nav">
                 <Container>
-                    <Toolbar sx={{padding: '0px 0.5rem !important'}}>
+                    <Toolbar sx={{padding: '0px !important'}}>
                         <IconButton
                             color="inherit"
                             aria-label="open drawer"
