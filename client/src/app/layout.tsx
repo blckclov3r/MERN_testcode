@@ -3,7 +3,7 @@
 import {Inter} from 'next/font/google'
 import createCache from "@emotion/cache";
 import {CacheProvider, EmotionCache} from "@emotion/react";
-import {ThemeProvider} from "@mui/material";
+import {Container, ThemeProvider} from "@mui/material";
 import theme from "@/lib/theme";
 import Header from './../components/Header'
 import Box from "@mui/material/Box";
@@ -38,7 +38,9 @@ export default function RootLayout({children}: {
 
                     <CacheProvider value={cache}>
                         <ThemeProvider theme={theme}>
-                            {children}
+                            <Container>
+                                {children}
+                            </Container>
                         </ThemeProvider>
                     </CacheProvider>
                 </ApolloProvider>
