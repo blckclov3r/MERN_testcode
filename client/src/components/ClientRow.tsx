@@ -4,6 +4,8 @@ import {Client} from "@/generated/graphql";
 import {Box, Button, TableCell, TableRow} from "@mui/material";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import AddClientModal from "@/components/AddClientModal";
+import {useState} from "react";
 
 type ClientRowProps = {
     // data: { clients: Client[] };
@@ -17,6 +19,7 @@ const ClientRow: React.FC<ClientRowProps> = ({client}) => {
         refetchQueries: [{query: GET_CLIENTS}]
     })
 
+
     return (
         <>
             <TableCell>{client.id}</TableCell>
@@ -28,7 +31,7 @@ const ClientRow: React.FC<ClientRowProps> = ({client}) => {
                     <Button variant={'contained'} size={'small'} color={'primary'}>
                         <ModeEditOutlinedIcon/>
                     </Button>
-                    <Button variant={'contained'} size={'small'} color={'error'} onClick={deleteClients}>
+                    <Button variant={'contained'} size={'small'} color={'error'} onClick={()=>{deleteClients}}>
                         <DeleteOutlineOutlinedIcon/>
                     </Button>
                 </Box>

@@ -4,22 +4,29 @@ import clients from "@/queries/clients"
 import Table from '@mui/material/Table';
 import ClientRow from "@/components/ClientRow";
 import {Client} from "@/generated/graphql";
+import Button from "@mui/material/Button";
+import {useState} from "react";
+import AddClientModal from "@/components/AddClientModal";
 
 const Clients = () => {
     const {GET_CLIENTS, DELETE_CLIENT} = clients()
     const {data, loading, error} = useQuery(GET_CLIENTS)
 
-    console.log('@@data', data)
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
+    console.log('@@data', data)
 
     return (
         <>
             <Box sx={{my: 3}}>
                 <Typography variant={'h3'}>Clients</Typography>
             </Box>
+            <Button variant={'contained'} color={'primary'} onClick={handleOpen} sx={{mb: 2}}>Add Client</Button>
             {
                 loading ? (
-                    <Box sx={{my: 3}}>
+                    <Box>
                         <Typography variant={'body1'}>Loading...</Typography>
                     </Box>
                 ) : (
@@ -51,6 +58,8 @@ const Clients = () => {
                 )
             }
 
+
+            <AddClientModal handleClose={handleClose} open={open}/>
         </>
     )
 }
