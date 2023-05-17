@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 interface AddClientProps {
     handleClose: () => void
     open: boolean
+    title?: string
 }
 
 const AddClientModal: React.FC<AddClientProps> = (props) => {
@@ -61,7 +62,7 @@ const AddClientModal: React.FC<AddClientProps> = (props) => {
             >
                 <Box sx={style}>
                     <Typography sx={{mb: 1}} id="modal-modal-title" variant="h6" component="h2">
-                        Add Clients
+                        {props.title}
                     </Typography>
                     <form onSubmit={handleSubmit}>
                         <TextField

@@ -13,8 +13,17 @@ const Clients = () => {
     const {data, loading, error} = useQuery(GET_CLIENTS)
 
     const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const [title, setTitle] = useState<string>()
+    const handleOpen = (id?: string) => {
+        if (id) {
+            setTitle(id)
+        }
+        setOpen(true);
+    }
+    const handleClose = () => {
+        setOpen(false)
+        setTitle("")
+    }
 
     console.log('@@data', data)
 
@@ -23,7 +32,9 @@ const Clients = () => {
             <Box sx={{my: 3}}>
                 <Typography variant={'h3'}>Clients</Typography>
             </Box>
-            <Button variant={'contained'} color={'primary'} onClick={handleOpen} sx={{mb: 2}}>Add Client</Button>
+            <Button variant={'contained'} color={'primary'} onClick={() => {
+                handleOpen()
+            }} sx={{mb: 2}}>Add Client</Button>
             {
                 loading ? (
                     <Box>
@@ -48,7 +59,8 @@ const Clients = () => {
                                             key={client.id}
                                             sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                         >
-                                            <ClientRow  client={client}/>
+                                            <ClientRow handleOpen={handleOpen}
+                                                       client={client}/>
                                         </TableRow>
                                     ))
                                 }
@@ -59,7 +71,7 @@ const Clients = () => {
             }
 
 
-            <AddClientModal handleClose={handleClose} open={open}/>
+            <AddClientModal title={title ? title : 'Add Client'} handleClose={handleClose} open={open}/>
         </>
     )
 }

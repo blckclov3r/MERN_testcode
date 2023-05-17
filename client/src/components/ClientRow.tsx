@@ -1,37 +1,39 @@
 import clients from "@/queries/clients";
-import {useMutation, useQuery} from "@apollo/client";
+import {useMutation} from "@apollo/client";
 import {Client} from "@/generated/graphql";
-import {Box, Button, TableCell, TableRow} from "@mui/material";
+import {Box, Button, TableCell} from "@mui/material";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import AddClientModal from "@/components/AddClientModal";
-import {useState} from "react";
 
 type ClientRowProps = {
-    // data: { clients: Client[] };
     client: Client
+    handleOpen: (id: string) => void
 };
 
-const ClientRow: React.FC<ClientRowProps> = ({client}) => {
+const ClientRow: React.FC<ClientRowProps> = (props) => {
     const {DELETE_CLIENT, GET_CLIENTS} = clients()
     const [deleteClients] = useMutation(DELETE_CLIENT, {
-        variables: {id: client.id},
+        variables: {id: props.client?.id},
         refetchQueries: [{query: GET_CLIENTS}]
     })
 
 
     return (
         <>
-            <TableCell>{client.id}</TableCell>
-            <TableCell>{client.name}</TableCell>
-            <TableCell>{client.email}</TableCell>
-            <TableCell>{client.phone}</TableCell>
+            <TableCell>{props.client?.id}</TableCell>
+            <TableCell>{props.client?.name}</TableCell>
+            <TableCell>{props.client?.email}</TableCell>
+            <TableCell>{props.client?.phone}</TableCell>
             <TableCell>
                 <Box sx={{display: 'flex', gap: 1}}>
-                    <Button variant={'contained'} size={'small'} color={'primary'}>
+                    <Button variant={'contained'} size={'small'} color={'primary'} onClick={() => {
+                        props.handleOpen(props.client?.id as string ?? "")
+                    }}>
                         <ModeEditOutlinedIcon/>
                     </Button>
-                    <Button variant={'contained'} size={'small'} color={'error'} onClick={()=>{deleteClients}}>
+                    <Button variant={'contained'} size={'small'} color={'error'} onClick={() => {
+                        deleteClients
+                    }}>
                         <DeleteOutlineOutlinedIcon/>
                     </Button>
                 </Box>
