@@ -6,14 +6,14 @@ import ClientRow from "@/components/ClientRow";
 import {Client} from "@/generated/graphql";
 import Button from "@mui/material/Button";
 import {useState} from "react";
-import AddClientModal from "@/components/AddClientModal";
+import ClientModal from "@/components/ClientModal";
 
 const Clients = () => {
     const {GET_CLIENTS, DELETE_CLIENT} = clients()
     const {data, loading, error} = useQuery(GET_CLIENTS)
 
     const [open, setOpen] = useState(false);
-    const [title, setTitle] = useState<string>()
+    const [title, setTitle] = useState<string>("")
     const handleOpen = (id?: string) => {
         if (id) {
             setTitle(id)
@@ -71,7 +71,7 @@ const Clients = () => {
             }
 
 
-            <AddClientModal title={title ? title : 'Add Client'} handleClose={handleClose} open={open}/>
+            <ClientModal title={title ? title : 'Add Client'} handleClose={handleClose} open={open}/>
         </>
     )
 }

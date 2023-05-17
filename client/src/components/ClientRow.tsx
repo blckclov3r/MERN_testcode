@@ -1,9 +1,9 @@
 import clients from "@/queries/clients";
 import {useMutation} from "@apollo/client";
-import {Client} from "@/generated/graphql";
 import {Box, Button, TableCell} from "@mui/material";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import {Client} from "@/generated/graphql";
 
 type ClientRowProps = {
     client: Client
@@ -24,7 +24,7 @@ const ClientRow: React.FC<ClientRowProps> = (props) => {
             <TableCell>{props.client?.name}</TableCell>
             <TableCell>{props.client?.email}</TableCell>
             <TableCell>{props.client?.phone}</TableCell>
-            <TableCell>
+            <TableCell align={"right"}>
                 <Box sx={{display: 'flex', gap: 1}}>
                     <Button variant={'contained'} size={'small'} color={'primary'} onClick={() => {
                         props.handleOpen(props.client?.id as string ?? "")
@@ -32,7 +32,7 @@ const ClientRow: React.FC<ClientRowProps> = (props) => {
                         <ModeEditOutlinedIcon/>
                     </Button>
                     <Button variant={'contained'} size={'small'} color={'error'} onClick={() => {
-                        deleteClients
+                        deleteClients()
                     }}>
                         <DeleteOutlineOutlinedIcon/>
                     </Button>

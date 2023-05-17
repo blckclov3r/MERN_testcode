@@ -1,6 +1,8 @@
 import {Box, Modal, TextField, Typography} from '@mui/material';
 import {ChangeEvent, FormEvent, useState} from "react";
 import Button from "@mui/material/Button";
+import {useMutation, useQuery} from "@apollo/client";
+import clients from "@/queries/clients";
 
 interface AddClientProps {
     handleClose: () => void
@@ -8,27 +10,45 @@ interface AddClientProps {
     title?: string
 }
 
-const AddClientModal: React.FC<AddClientProps> = (props) => {
+const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    p: 4,
+    border: 'none'
+};
 
-    const style = {
-        position: 'absolute' as 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 400,
-        bgcolor: 'background.paper',
-        p: 4,
-        border: 'none'
-    };
+const ClientModal: React.FC<AddClientProps> = (props) => {
 
     const handleBackdropClick = (event: FormEvent) => {
-        // Prevent closing when clicking outside the modal
         event.stopPropagation();
     };
 
-    const [name, setName] = useState<string>('');
-    const [email, setEmail] = useState<string>('');
-    const [phone, setPhone] = useState<string>('');
+    const [name, setName] = useState<string>();
+    const [email, setEmail] = useState<string>();
+    const [phone, setPhone] = useState<string>();
+
+    const {ADD_CLIENT, GET_CLIENTS, GET_CLIENTID} = clients();
+
+    const {data} = useQuery(GET_CLIENTID, {
+        variables: {
+            id: props.title
+        },
+        skip: props.title === ""
+    })
+
+    console.log('@@data', data)
+    const [addClient] = useMutation(ADD_CLIENT, {
+        variables: {
+            name,
+            email,
+            phone
+        },
+        refetchQueries: [{query: GET_CLIENTS}]
+    })
 
     const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
         setName(event.target.value);
@@ -42,13 +62,14 @@ const AddClientModal: React.FC<AddClientProps> = (props) => {
         setPhone(event.target.value);
     };
 
-    const handleSubmit = (event: FormEvent) => {
+    const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
-        console.log('Name:', name);
-        console.log('Email:', email);
-        console.log('Phone:', phone);
-        // Perform any further actions with the form data
-        props.handleClose();
+        try {
+            await addClient()
+            props.handleClose();
+        } catch (err) {
+            console.log('@@err', err)
+        }
     };
 
     return (
@@ -71,8 +92,10 @@ const AddClientModal: React.FC<AddClientProps> = (props) => {
                             value={name}
                             onChange={handleNameChange}
                             fullWidth
+                            defaultValue={data?.client.name ?? ""}
                             margin="normal"
                             size="small"
+                            InputLabelProps={{shrink: true}}
                         />
                         <TextField
                             label="Email"
@@ -82,6 +105,8 @@ const AddClientModal: React.FC<AddClientProps> = (props) => {
                             fullWidth
                             margin="normal"
                             size="small"
+                            defaultValue={data?.client.email ?? ""}
+                            InputLabelProps={{shrink: true}}
                         />
                         <TextField
                             label="Phone"
@@ -91,6 +116,8 @@ const AddClientModal: React.FC<AddClientProps> = (props) => {
                             fullWidth
                             margin="normal"
                             size="small"
+                            defaultValue={data?.client.phone ?? ""}
+                            InputLabelProps={{shrink: true}}
                         />
 
                         <Box sx={{display: 'flex', justifyContent: 'space-between', mt: 3}}>
@@ -106,4 +133,4 @@ const AddClientModal: React.FC<AddClientProps> = (props) => {
         </>
     );
 }
-export default AddClientModal;
+export default ClientModal;
