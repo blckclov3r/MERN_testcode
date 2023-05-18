@@ -25,8 +25,6 @@ const Clients = () => {
         setTitle("")
     }
 
-    console.log('@@data', data)
-
     return (
         <>
             <Box sx={{my: 3}}>

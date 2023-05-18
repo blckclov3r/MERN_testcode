@@ -52,8 +52,8 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
             email,
             phone
         },
+        refetchQueries: [{query: GET_CLIENTS}]
     });
-
 
     const [updateClient] = useMutation(UPDATE_CLIENT, {
         variables: {
