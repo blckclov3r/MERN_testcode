@@ -1,5 +1,5 @@
 import {Box, Modal, TextField, Typography} from '@mui/material';
-import {ChangeEvent, FormEvent, useState} from "react";
+import {ChangeEvent, FormEvent, useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import {useMutation, useQuery} from "@apollo/client";
 import clients from "@/queries/clients";
@@ -23,24 +23,34 @@ const style = {
 
 const ClientModal: React.FC<AddClientProps> = (props) => {
 
-    const handleBackdropClick = (event: FormEvent) => {
-        event.stopPropagation();
-    };
-
-    const [name, setName] = useState<string>();
-    const [email, setEmail] = useState<string>();
-    const [phone, setPhone] = useState<string>();
+    const [name, setName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [phone, setPhone] = useState<string>('');
 
     const {ADD_CLIENT, GET_CLIENTS, GET_CLIENTID} = clients();
+    const id = props.title ?? ""
 
-    const {data} = useQuery(GET_CLIENTID, {
+
+    const {data, loading} = useQuery(GET_CLIENTID, {
         variables: {
-            id: props.title
+            id
         },
-        skip: props.title === ""
+        skip: props.title === "" || props.title === undefined
     })
+    useEffect(() => {
+        if (loading) {
+            setName('');
+            setEmail('');
+            setPhone('');
+        }
+    }, [id, loading]);
 
-    console.log('@@data', data)
+    useEffect(() => {
+        if (data && data?.length) {
+            setName(data.name)
+        }
+    }, [])
+
     const [addClient] = useMutation(ADD_CLIENT, {
         variables: {
             name,
@@ -48,7 +58,7 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
             phone
         },
         refetchQueries: [{query: GET_CLIENTS}]
-    })
+    });
 
     const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
         setName(event.target.value);
@@ -65,10 +75,22 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         try {
-            await addClient()
+            await addClient().then(() => {
+                setName('')
+                setEmail('')
+                setPhone('')
+            })
             props.handleClose();
+
+
         } catch (err) {
             console.log('@@err', err)
+        }
+    };
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === 'Escape') {
+            event.stopPropagation();
         }
     };
 
@@ -79,56 +101,58 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
                 onClose={props.handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
-                BackdropProps={{onClick: handleBackdropClick}}
-            >
-                <Box sx={style}>
-                    <Typography sx={{mb: 1}} id="modal-modal-title" variant="h6" component="h2">
-                        {props.title}
-                    </Typography>
-                    <form onSubmit={handleSubmit}>
-                        <TextField
-                            label="Name"
-                            variant="outlined"
-                            value={name}
-                            onChange={handleNameChange}
-                            fullWidth
-                            defaultValue={data?.client.name ?? ""}
-                            margin="normal"
-                            size="small"
-                            InputLabelProps={{shrink: true}}
-                        />
-                        <TextField
-                            label="Email"
-                            variant="outlined"
-                            value={email}
-                            onChange={handleEmailChange}
-                            fullWidth
-                            margin="normal"
-                            size="small"
-                            defaultValue={data?.client.email ?? ""}
-                            InputLabelProps={{shrink: true}}
-                        />
-                        <TextField
-                            label="Phone"
-                            variant="outlined"
-                            value={phone}
-                            onChange={handlePhoneChange}
-                            fullWidth
-                            margin="normal"
-                            size="small"
-                            defaultValue={data?.client.phone ?? ""}
-                            InputLabelProps={{shrink: true}}
-                        />
 
-                        <Box sx={{display: 'flex', justifyContent: 'space-between', mt: 3}}>
-                            <Button onClick={props.handleClose} variant="contained" color={'error'}
-                                    size={'small'}>Cancel</Button>
-                            <Button type="submit" variant="contained" color="primary" size="small">
-                                Submit
-                            </Button>
-                        </Box>
-                    </form>
-                </Box>
+            >
+                <div onKeyDown={handleKeyDown}>
+                    <Box sx={style}>
+                        <Typography sx={{mb: 1}} id="modal-modal-title" variant="h6" component="h2">
+                            {props.title}
+                        </Typography>
+                        <form onSubmit={handleSubmit}>
+                            <TextField
+                                label="Name"
+                                variant="outlined"
+                                value={name ? name : undefined}
+                                onChange={handleNameChange}
+                                fullWidth
+                                defaultValue={data?.client.name ?? undefined}
+                                margin="normal"
+                                size="small"
+                                InputLabelProps={{shrink: !!data?.client.name}}
+                            />
+                            <TextField
+                                label="Email"
+                                variant="outlined"
+                                value={email ? email : undefined}
+                                onChange={handleEmailChange}
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                defaultValue={data?.client.email ?? undefined}
+                                InputLabelProps={{shrink: !!data?.client.email}}
+                            />
+                            <TextField
+                                label="Phone"
+                                variant="outlined"
+                                value={phone ? phone : undefined}
+                                onChange={handlePhoneChange}
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                defaultValue={data?.client.phone ?? undefined}
+                                InputLabelProps={{shrink: !!data?.client.phone}}
+                            />
+
+                            <Box sx={{display: 'flex', justifyContent: 'space-between', mt: 3}}>
+                                <Button onClick={props.handleClose} variant="contained" color={'error'}
+                                        size={'small'}>Cancel</Button>
+                                <Button type="submit" variant="contained" color="primary" size="small">
+                                    Submit
+                                </Button>
+                            </Box>
+                        </form>
+                    </Box>
+                </div>
             </Modal>
         </>
     );
