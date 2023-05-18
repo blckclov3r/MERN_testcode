@@ -23,33 +23,28 @@ const style = {
 
 const ClientModal: React.FC<AddClientProps> = (props) => {
 
-    const [name, setName] = useState<string>('');
-    const [email, setEmail] = useState<string>('');
-    const [phone, setPhone] = useState<string>('');
+    const [name, setName] = useState<string | null>('');
+    const [email, setEmail] = useState<string | null>('');
+    const [phone, setPhone] = useState<string | null>('');
 
-    const {ADD_CLIENT, GET_CLIENTS, GET_CLIENTID} = clients();
-    const id = props.title ?? ""
-
+    const {ADD_CLIENT, GET_CLIENTS, GET_CLIENTID, UPDATE_CLIENT} = clients();
+    const id = props?.title ?? null
 
     const {data, loading} = useQuery(GET_CLIENTID, {
         variables: {
             id
         },
-        skip: props.title === "" || props.title === undefined
+        skip: props.title === "" || props.title === null,
+        ssr: true
     })
-    useEffect(() => {
-        if (loading) {
-            setName('');
-            setEmail('');
-            setPhone('');
-        }
-    }, [id, loading]);
 
     useEffect(() => {
-        if (data && data?.length) {
-            setName(data.name)
+        if (loading && id) {
+            setName(null);
+            setEmail(null);
+            setPhone(null);
         }
-    }, [])
+    }, [id, loading]);
 
     const [addClient] = useMutation(ADD_CLIENT, {
         variables: {
@@ -57,7 +52,16 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
             email,
             phone
         },
-        refetchQueries: [{query: GET_CLIENTS}]
+    });
+
+
+    const [updateClient] = useMutation(UPDATE_CLIENT, {
+        variables: {
+            id,
+            ...((name !== null) ? {name} : {}),
+            ...((email !== null) ? {email} : {}),
+            ...((phone !== null) ? {phone} : {}),
+        },
     });
 
     const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -75,14 +79,20 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         try {
-            await addClient().then(() => {
-                setName('')
-                setEmail('')
-                setPhone('')
-            })
+            if (id === "Add Client") {
+                await addClient().then(() => {
+                    setName(null)
+                    setEmail(null)
+                    setPhone(null)
+                })
+            } else {
+                await updateClient().then(() => {
+                    setName(null)
+                    setEmail(null)
+                    setPhone(null)
+                })
+            }
             props.handleClose();
-
-
         } catch (err) {
             console.log('@@err', err)
         }
@@ -101,7 +111,6 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
                 onClose={props.handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
-
             >
                 <div onKeyDown={handleKeyDown}>
                     <Box sx={style}>
@@ -118,7 +127,7 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
                                 defaultValue={data?.client.name ?? undefined}
                                 margin="normal"
                                 size="small"
-                                InputLabelProps={{shrink: !!data?.client.name}}
+                                InputLabelProps={{shrink: !!name || data?.client.name}}
                             />
                             <TextField
                                 label="Email"
@@ -129,7 +138,7 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
                                 margin="normal"
                                 size="small"
                                 defaultValue={data?.client.email ?? undefined}
-                                InputLabelProps={{shrink: !!data?.client.email}}
+                                InputLabelProps={{shrink: !!email || data?.client.email}}
                             />
                             <TextField
                                 label="Phone"
@@ -140,7 +149,7 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
                                 margin="normal"
                                 size="small"
                                 defaultValue={data?.client.phone ?? undefined}
-                                InputLabelProps={{shrink: !!data?.client.phone}}
+                                InputLabelProps={{shrink: !!phone || data?.client.phone}}
                             />
 
                             <Box sx={{display: 'flex', justifyContent: 'space-between', mt: 3}}>

@@ -69,8 +69,6 @@ const Clients = () => {
                     </TableContainer>
                 )
             }
-
-
             <ClientModal title={title ? title : 'Add Client'} handleClose={handleClose} open={open}/>
         </>
     )

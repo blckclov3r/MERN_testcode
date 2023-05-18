@@ -33,6 +33,17 @@ const clients = () => {
         }
     `;
 
+    const UPDATE_CLIENT = gql`
+        mutation updateClient($id: ID!,$name: String, $email: String, $phone: String){
+            updateClient(id: $id, name: $name, email: $email, phone: $phone){
+                id
+                name
+                email
+                phone
+             }
+        }
+    `;
+
     const DELETE_CLIENT = gql`
         mutation deleteClient($id: ID!){
             deleteClient(id: $id){
@@ -49,7 +60,8 @@ const clients = () => {
         GET_CLIENTS,
         DELETE_CLIENT,
         ADD_CLIENT,
-        GET_CLIENTID
+        GET_CLIENTID,
+        UPDATE_CLIENT
     }
 }
 
