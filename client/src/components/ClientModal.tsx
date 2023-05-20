@@ -4,6 +4,12 @@ import Button from "@mui/material/Button";
 import {useMutation, useQuery} from "@apollo/client";
 import clients from "@/queries/clients";
 
+interface Client {
+    name?: string;
+    email?: string;
+    phone?: string;
+}
+
 interface AddClientProps {
     handleClose: () => void
     open: boolean
@@ -30,7 +36,7 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
     const {ADD_CLIENT, GET_CLIENTS, GET_CLIENTID, UPDATE_CLIENT} = clients();
     const id = props?.title ?? null
 
-    const {data, loading} = useQuery(GET_CLIENTID, {
+    const {data, loading} = useQuery<{ client: Client }>(GET_CLIENTID, {
         variables: {
             id
         },
@@ -52,7 +58,16 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
             email,
             phone
         },
-        refetchQueries: [{query: GET_CLIENTS}]
+        update(cache, {
+            data: {addClient}
+        }) {
+            const {clients} = cache.readQuery<any>({query: GET_CLIENTS})
+            cache.writeQuery({
+                query: GET_CLIENTS,
+                data: {clients: clients?.concat([addClient]) ?? []}
+            })
+        }
+        // refetchQueries: [{query: GET_CLIENTS}]
     });
 
     const [updateClient] = useMutation(UPDATE_CLIENT, {
@@ -80,6 +95,9 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
         event.preventDefault();
         try {
             if (id === "Add Client") {
+                if(!name || !phone || !email){
+                    alert('Please fill in all fields')
+                }
                 await addClient().then(() => {
                     setName(null)
                     setEmail(null)
@@ -127,7 +145,7 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
                                 defaultValue={data?.client.name ?? undefined}
                                 margin="normal"
                                 size="small"
-                                InputLabelProps={{shrink: !!name || data?.client.name}}
+                                InputLabelProps={{shrink: (!!name || data?.client.name) as boolean}}
                             />
                             <TextField
                                 label="Email"
@@ -138,7 +156,7 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
                                 margin="normal"
                                 size="small"
                                 defaultValue={data?.client.email ?? undefined}
-                                InputLabelProps={{shrink: !!email || data?.client.email}}
+                                InputLabelProps={{shrink: (!!email || data?.client.email) as boolean}}
                             />
                             <TextField
                                 label="Phone"
@@ -149,7 +167,7 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
                                 margin="normal"
                                 size="small"
                                 defaultValue={data?.client.phone ?? undefined}
-                                InputLabelProps={{shrink: !!phone || data?.client.phone}}
+                                InputLabelProps={{shrink: (!!phone || data?.client.phone) as boolean}}
                             />
 
                             <Box sx={{display: 'flex', justifyContent: 'space-between', mt: 3}}>
