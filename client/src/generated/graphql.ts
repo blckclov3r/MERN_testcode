@@ -162,7 +162,7 @@ export type GetProjectIdQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectIdQuery = { __typename?: 'RootQueryType', project?: { __typename?: 'Project', id?: string | null, name?: string | null, description?: string | null, status?: string | null } | null };
+export type GetProjectIdQuery = { __typename?: 'RootQueryType', project?: { __typename?: 'Project', id?: string | null, name?: string | null, description?: string | null, status?: string | null, client?: { __typename?: 'Client', id?: string | null, name?: string | null, email?: string | null, phone?: string | null } | null } | null };
 
 export type AddProjectMutationVariables = Exact<{
   clientId: Scalars['ID'];
@@ -180,6 +180,16 @@ export type DeleteProjectMutationVariables = Exact<{
 
 
 export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject?: { __typename?: 'Project', id?: string | null, name?: string | null, description?: string | null, status?: string | null, client?: { __typename?: 'Client', id?: string | null } | null } | null };
+
+export type UpdateProjectMutationVariables = Exact<{
+  id: Scalars['ID'];
+  name?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<ProjectStatusUpdate>;
+}>;
+
+
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject?: { __typename?: 'Project', id?: string | null, name?: string | null, description?: string | null, status?: string | null } | null };
 
 
 export const GetClientsDocument = gql`
@@ -413,6 +423,12 @@ export const GetProjectIdDocument = gql`
     name
     description
     status
+    client {
+      id
+      name
+      email
+      phone
+    }
   }
 }
     `;
@@ -527,3 +543,42 @@ export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
 export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
 export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export const UpdateProjectDocument = gql`
+    mutation updateProject($id: ID!, $name: String, $description: String, $status: ProjectStatusUpdate) {
+  updateProject(id: $id, name: $name, description: $description, status: $status) {
+    id
+    name
+    description
+    status
+  }
+}
+    `;
+export type UpdateProjectMutationFn = Apollo.MutationFunction<UpdateProjectMutation, UpdateProjectMutationVariables>;
+
+/**
+ * __useUpdateProjectMutation__
+ *
+ * To run a mutation, you first call `useUpdateProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProjectMutation, { data, loading, error }] = useUpdateProjectMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      name: // value for 'name'
+ *      description: // value for 'description'
+ *      status: // value for 'status'
+ *   },
+ * });
+ */
+export function useUpdateProjectMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectMutation, UpdateProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, options);
+      }
+export type UpdateProjectMutationHookResult = ReturnType<typeof useUpdateProjectMutation>;
+export type UpdateProjectMutationResult = Apollo.MutationResult<UpdateProjectMutation>;
+export type UpdateProjectMutationOptions = Apollo.BaseMutationOptions<UpdateProjectMutation, UpdateProjectMutationVariables>;

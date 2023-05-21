@@ -1,16 +1,16 @@
 import {Box, Paper, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography} from "@mui/material";
 import {useQuery} from "@apollo/client";
-import clients from "@/queries/clients"
 import Table from '@mui/material/Table';
-import ClientRow from "@/components/ClientRow";
-import {Client} from "@/generated/graphql";
+import {Project} from "@/generated/graphql";
 import Button from "@mui/material/Button";
+import projects from "@/queries/projects";
+import ProjectRow from "@/components/projects/ProjectRow";
 import {useState} from "react";
-import ClientModal from "@/components/ClientModal";
+import ProjectModal from "@/components/projects/ProjectModal";
 
-const Clients = () => {
-    const {GET_CLIENTS, DELETE_CLIENT} = clients()
-    const {data, loading, error} = useQuery(GET_CLIENTS)
+const ProjectContainer = () => {
+    const {GET_PROJECTS} = projects()
+    const {data, loading, error} = useQuery(GET_PROJECTS)
 
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState<string>("")
@@ -28,11 +28,11 @@ const Clients = () => {
     return (
         <>
             <Box sx={{my: 3}}>
-                <Typography variant={'h3'}>Clients</Typography>
+                <Typography variant={'h3'}>Projects</Typography>
             </Box>
             <Button variant={'contained'} color={'primary'} onClick={() => {
                 handleOpen()
-            }} sx={{mb: 2}}>Add Client</Button>
+            }} sx={{mb: 2}}>Add Project</Button>
             {
                 loading ? (
                     <Box>
@@ -45,20 +45,21 @@ const Clients = () => {
                                 <TableRow>
                                     <TableCell>id</TableCell>
                                     <TableCell>name</TableCell>
-                                    <TableCell>email</TableCell>
-                                    <TableCell>phone</TableCell>
+                                    <TableCell>description</TableCell>
+                                    <TableCell>status</TableCell>
                                     <TableCell></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {
-                                    data?.clients?.map((client: Client) => (
+                                    data?.projects?.map((project: Project) => (
                                         <TableRow
-                                            key={client.id}
+                                            key={project.id}
                                             sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                         >
-                                            <ClientRow handleOpen={handleOpen}
-                                                       client={client}/>
+                                            <ProjectRow
+                                                handleOpen={handleOpen}
+                                                project={project}/>
                                         </TableRow>
                                     ))
                                 }
@@ -67,9 +68,9 @@ const Clients = () => {
                     </TableContainer>
                 )
             }
-            <ClientModal title={title ? title : 'Add Client'} handleClose={handleClose} open={open}/>
+            <ProjectModal title={title ? title : 'Add Project'} handleClose={handleClose} open={open}/>
         </>
     )
 }
 
-export default Clients
+export default ProjectContainer

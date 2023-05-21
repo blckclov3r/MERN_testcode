@@ -180,8 +180,8 @@ const mutation = new GraphQLObjectType({
                     args.id,
                     {
                         name: args.name,
-                        description: args.email,
-                        status: args.phone
+                        description: args.description,
+                        status: args.status
                     },
                     {new: true}
                 );

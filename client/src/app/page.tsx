@@ -1,11 +1,9 @@
 'use client'
 
-import {Container, Typography} from "@mui/material";
-import Clients from "@/components/Clients";
-
+import ClientsContainer from "@/components/clients/ClientsContainer";
 
 export default function Home() {
     return (
-            <Clients/>
+        <ClientsContainer/>
     )
 }

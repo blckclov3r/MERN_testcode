@@ -1,6 +1,6 @@
 import {gql} from "@apollo/client";
 
-const projects = () =>{
+const projects = () => {
     const GET_PROJECTS = gql`
         query getProjects{
             projects{
@@ -19,6 +19,7 @@ const projects = () =>{
                 name
                 description
                 status
+                clientId
             }
         }
     `;
@@ -48,10 +49,23 @@ const projects = () =>{
         }
     `;
 
+    const UPDATE_PROJECT = gql`
+        mutation updateProject($id: ID!, $name: String, $description: String, $status: ProjectStatusUpdate){
+            updateProject(id: $id, name: $name, description: $description, status: $status){
+                id
+                name
+                description
+                status
+            }
+        }
+    `;
+
     return {
         GET_PROJECTS,
         GET_PROJECTID,
         ADD_PROJECT,
-        DELETE_PROJECT
+        DELETE_PROJECT,
+        UPDATE_PROJECT,
     }
 }
+export default projects
