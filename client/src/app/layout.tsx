@@ -32,22 +32,23 @@ export default function RootLayout({children}: {
         <body className={inter.className}>
 
         <>
-            <Header/>
-            <Box sx={{mt: 5, pt: 3}}>
-                <ApolloProvider client={client}>
-
-                    <CacheProvider value={cache}>
-                        <ThemeProvider theme={theme}>
-                            <Container>
-                                {children}
-                            </Container>
-                        </ThemeProvider>
-                    </CacheProvider>
-                </ApolloProvider>
-
-            </Box>
+            <nav>
+                <Header/>
+            </nav>
+            <main>
+                <Container>
+                    <Box sx={{mt: 5, pt: 3, height: '100%'}}>
+                        <ApolloProvider client={client}>
+                            <CacheProvider value={cache}>
+                                <ThemeProvider theme={theme}>
+                                    {children}
+                                </ThemeProvider>
+                            </CacheProvider>
+                        </ApolloProvider>
+                    </Box>
+                </Container>
+            </main>
         </>
-
         </body>
         </html>
     )

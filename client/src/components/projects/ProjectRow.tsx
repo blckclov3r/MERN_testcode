@@ -11,7 +11,9 @@ interface IProject {
 }
 
 const ProjectRow: React.FC<IProject> = (props) => {
+
     const {DELETE_PROJECT, GET_PROJECTS} = projects()
+
     const [deleteProject] = useMutation(DELETE_PROJECT, {
         variables: {id: props.project?.id},
         refetchQueries: [{query: GET_PROJECTS}]
@@ -23,15 +25,18 @@ const ProjectRow: React.FC<IProject> = (props) => {
             <TableCell>{props.project?.name}</TableCell>
             <TableCell>{props.project?.description}</TableCell>
             <TableCell>{props.project?.status}</TableCell>
-            <TableCell align={"right"}>
+            <TableCell align={"right"} sx={{display: 'flex'}}>
                 <Box sx={{display: 'flex', gap: 1}}>
                     <Button variant={'contained'} size={'small'} color={'primary'} onClick={() => {
-                        props.handleOpen(props.project?.id as string ?? "")
+                        props.handleOpen(props.project?.id as string)
                     }}>
                         <ModeEditOutlinedIcon/>
                     </Button>
-                    <Button variant={'contained'} size={'small'} color={'error'} onClick={() => {
-                        deleteProject()
+                    <Button variant={'contained'} size={'small'} color={'error'} onClick={async () => {
+                        const result = confirm('Do you want to delete this project id' + props?.project?.id)
+                        if (result) {
+                            await deleteProject()
+                        }
                     }}>
                         <DeleteOutlineOutlinedIcon/>
                     </Button>

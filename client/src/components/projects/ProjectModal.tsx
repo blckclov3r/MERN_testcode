@@ -1,20 +1,26 @@
-import {Box, MenuItem, Modal, Select, TextField, Typography} from '@mui/material';
-import {ChangeEvent, FormEvent, useEffect, useMemo, useState} from "react";
+import {Box, MenuItem, Modal, Select, SelectChangeEvent, TextField, Typography} from '@mui/material';
+import {ChangeEvent, Dispatch, FormEvent, SetStateAction, useMemo} from "react";
 import Button from "@mui/material/Button";
-import {useMutation, useQuery} from "@apollo/client";
-import projects from "@/queries/projects";
+import {IClients, IProject, SelectOption} from "@/components/projects/ProjectsContainer";
 
-interface IProject {
-    id: string;
-    name?: string;
-    description?: string;
-    status?: string;
-}
 
 interface AddProjectProps {
+    id: string | null
     handleClose: () => void
     open: boolean
-    title?: string
+    setClientId: Dispatch<SetStateAction<string | null>>
+    setName: Dispatch<SetStateAction<string | null>>
+    setDescription: Dispatch<SetStateAction<string | null>>
+    setStatus: Dispatch<SetStateAction<string | null>>
+    clientId: string | null
+    name: string | null
+    description: string | null
+    status: string | null
+    addProject: any
+    updateProject: any
+    projectList: { project: IProject } | undefined
+    clientsList: { clients: IClients[] } | undefined
+    clientIdOptions: SelectOption[]
 }
 
 const style = {
@@ -28,120 +34,28 @@ const style = {
     border: 'none'
 };
 
-type SelectOption = {
-    id: number;
-    value: string;
-    label: string;
-}
-
-const clientIdOptions: SelectOption[] = [
-    {
-        id: 1,
-        value: 'new',
-        label: 'Not Started'
-    },
-    {
-        id: 2,
-        value: 'progress',
-        label: 'In Progress'
-    },
-    {
-        id: 3,
-        value: 'completed',
-        label: 'Completed'
-    },
-]
-console.log('@@clientIdOptions', clientIdOptions)
-
 const ProjectModal: React.FC<AddProjectProps> = (props) => {
 
-    const [status, setStatus] = useState<string | null>('')
-
-    const [name, setName] = useState<string | null>('');
-    const [description, setDescription] = useState<string | null>('');
-
-    const {ADD_PROJECT, GET_PROJECTS, GET_PROJECTID, UPDATE_PROJECT} = projects();
-    const id = props?.title ?? null
-
-    const {data: projectList, loading} = useQuery<{ project: IProject }>(GET_PROJECTID, {
-        variables: {
-            id
-        },
-        // skip: props.title === "" || props.title === null,
-        ssr: true
-    })
-    const {data: projectsList} = useQuery<{ projects: IProject[] }>(GET_PROJECTS);
-
-    useEffect(() => {
-        if (loading && id) {
-            setName(null);
-            setDescription(null);
-            setStatus(null);
-        }
-    }, [id, loading]);
-
-    const [addProject] = useMutation(ADD_PROJECT, {
-        variables: {
-            // id: data?.project.id,
-            name,
-            description,
-            status
-        },
-        update(cache, {
-            data: {addProject}
-        }) {
-            const {projects} = cache.readQuery<any>({query: GET_PROJECTS})
-            cache.writeQuery({
-                query: GET_PROJECTS,
-                data: {projects: projects?.concat([addProject]) ?? []}
-            })
-        }
-        // refetchQueries: [{query: GET_PROJECTS}]
-    });
-
-    const [updateProject] = useMutation(UPDATE_PROJECT, {
-        variables: {
-            id,
-            ...((name !== null) ? {name} : {}),
-            ...((description !== null) ? {description} : {}),
-            ...((status !== null) ? {status} : {}),
-        },
-    });
-
     const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setName(event.target.value);
+        props.setName(event.target.value);
     };
 
     const handleDescriptionChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setDescription(event.target.value);
+        props.setDescription(event.target.value);
     };
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
-
-        await updateProject().then(() => {
-            setName(null)
-            setDescription(null)
-            setStatus(null)
-        })
-
         try {
-            if (id === "Add Project") {
-                if (!name || !description || !status) {
-                    alert('Please fill in all fields')
-                }
-                await addProject().then(() => {
-                    setName(null)
-                    setDescription(null)
-                    setStatus(null)
-                })
+            if (props.id === "" || props.id === null) {
+                await props.addProject()
             } else {
-                await updateProject().then(() => {
-                    setName(null)
-                    setDescription(null)
-                    setStatus(null)
-                })
+                await props.updateProject()
             }
+            props.setClientId(null)
+            props.setName(null)
+            props.setDescription(null)
+            props.setStatus(null)
             props.handleClose();
         } catch (err) {
             console.log('@@err', err)
@@ -154,17 +68,22 @@ const ProjectModal: React.FC<AddProjectProps> = (props) => {
         }
     };
 
-    const handleStatusChange = (event: any) => {
-        setStatus(event.target.value as string);
+    const handleStatusChange = (event: SelectChangeEvent) => {
+        props.setStatus(event.target.value as string);
     };
 
+    const handleClientChange = async (event: SelectChangeEvent) => {
+        await props.setClientId(event.target.value as string)
+    }
+
     const selectedStatus = useMemo(() => {
-        return clientIdOptions?.filter(x => {
-            if (x.label === projectList?.project.status) {
+        return props.clientIdOptions?.filter(x => {
+            if (x.label === props.projectList?.project.status) {
                 return x
             }
         })[0]?.value ?? null
-    }, [id, projectList?.project?.status])
+    }, [props.id, props.projectList?.project?.status])
+
 
     return (
         <>
@@ -177,45 +96,68 @@ const ProjectModal: React.FC<AddProjectProps> = (props) => {
                 <div onKeyDown={handleKeyDown}>
                     <Box sx={style}>
                         <Typography sx={{mb: 1}} id="modal-modal-title" variant="h6" component="h2">
-                            {props.title}
+                            {props.id ? props.id : "Add Project"}
                         </Typography>
                         <form onSubmit={handleSubmit}>
+
                             <Select
                                 labelId={'clientId'}
-                                id={'select'}
-                                value={status || (selectedStatus !== null ? selectedStatus : clientIdOptions[0].value)}
-                                defaultValue={(id ? selectedStatus : clientIdOptions[0].value) ?? clientIdOptions[0].value}
-                                onChange={handleStatusChange}
+                                id={'clientId'}
+                                onChange={handleClientChange}
+                                value={props?.clientId || (props.projectList?.project.clientId || '')}
+                                defaultValue={props.projectList?.project.clientId}
+                                size={'small'}
+                                sx={{my: 1}}
+                                fullWidth={true}
                             >
-                                {clientIdOptions?.map((option) => (
+                                {
+                                    props.clientsList?.clients.map((client) => (
+                                        <MenuItem key={client.id} value={client.id}>
+                                            {client.name}
+                                        </MenuItem>
+                                    ))
+                                }
+                            </Select>
+
+                            <TextField
+                                label="Name"
+                                variant="outlined"
+                                value={props.name ? props.name : undefined}
+                                onChange={handleNameChange}
+                                fullWidth
+                                defaultValue={props.projectList?.project?.name ?? undefined}
+                                margin="normal"
+                                size="small"
+                                InputLabelProps={{shrink: (!!props.name || props.projectList?.project?.name) as boolean}}
+                            />
+                            <TextField
+                                label="Description"
+                                variant="outlined"
+                                value={props.description ? props.description : undefined}
+                                onChange={handleDescriptionChange}
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                defaultValue={props.projectList?.project?.description ?? undefined}
+                                InputLabelProps={{shrink: (!!props.description || props.projectList?.project?.description) as boolean}}
+                            />
+
+                            <Select
+                                labelId={'statusId'}
+                                id={'selectedStatusId'}
+                                value={props.status || (selectedStatus !== null ? selectedStatus : props.clientIdOptions[0].value)}
+                                defaultValue={(props.id ? selectedStatus : props.clientIdOptions[0].value) ?? props.clientIdOptions[0].value}
+                                onChange={handleStatusChange}
+                                size={'small'}
+                                sx={{my: 1}}
+                            >
+                                {props.clientIdOptions?.map((option) => (
                                     <MenuItem key={option.value} value={option.value}>
                                         {option.label}
                                     </MenuItem>
                                 ))}
                             </Select>
 
-                            <TextField
-                                label="Name"
-                                variant="outlined"
-                                value={name ? name : undefined}
-                                onChange={handleNameChange}
-                                fullWidth
-                                defaultValue={projectList?.project?.name ?? undefined}
-                                margin="normal"
-                                size="small"
-                                InputLabelProps={{shrink: (!!name || projectList?.project?.name) as boolean}}
-                            />
-                            <TextField
-                                label="Description"
-                                variant="outlined"
-                                value={description ? description : undefined}
-                                onChange={handleDescriptionChange}
-                                fullWidth
-                                margin="normal"
-                                size="small"
-                                defaultValue={projectList?.project?.description ?? undefined}
-                                InputLabelProps={{shrink: (!!description || projectList?.project?.description) as boolean}}
-                            />
                             <Box sx={{display: 'flex', justifyContent: 'space-between', mt: 3}}>
                                 <Button onClick={props.handleClose} variant="contained" color={'error'}
                                         size={'small'}>Cancel</Button>
