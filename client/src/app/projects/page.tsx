@@ -1,12 +1,12 @@
-'use client'
+"use client";
 
 import ProjectsContainer from "@/components/projects/ProjectsContainer";
 
 const Projects = () => {
-    return (
-        <>
-            <ProjectsContainer/>
-        </>
-    )
-}
-export default Projects
+  return (
+    <>
+      <ProjectsContainer />
+    </>
+  );
+};
+export default Projects;
