@@ -164,6 +164,7 @@ const mutation = new GraphQLObjectType({
         id: { type: new GraphQLNonNull(GraphQLID) },
         name: { type: GraphQLString },
         description: { type: GraphQLString },
+        clientId: { type: GraphQLString },
         status: {
           type: new GraphQLEnumType({
             name: "ProjectStatusUpdate",
@@ -182,6 +183,7 @@ const mutation = new GraphQLObjectType({
             name: args.name,
             description: args.description,
             status: args.status,
+            clientId: args.clientId,
           },
           { new: true }
         );

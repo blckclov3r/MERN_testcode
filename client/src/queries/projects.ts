@@ -1,7 +1,7 @@
-import { gql } from "@apollo/client";
+import {gql} from "@apollo/client";
 
 const projects = () => {
-  const GET_PROJECTS = gql`
+    const GET_PROJECTS = gql`
     query getProjects {
       projects {
         id
@@ -12,7 +12,7 @@ const projects = () => {
     }
   `;
 
-  const GET_PROJECTID = gql`
+    const GET_PROJECTID = gql`
     query getProjectID($id: ID) {
       project(id: $id) {
         id
@@ -24,7 +24,7 @@ const projects = () => {
     }
   `;
 
-  const ADD_PROJECT = gql`
+    const ADD_PROJECT = gql`
     mutation addProject(
       $clientId: ID!
       $name: String!
@@ -45,7 +45,7 @@ const projects = () => {
     }
   `;
 
-  const DELETE_PROJECT = gql`
+    const DELETE_PROJECT = gql`
     mutation deleteProject($id: ID!) {
       deleteProject(id: $id) {
         id
@@ -59,33 +59,36 @@ const projects = () => {
     }
   `;
 
-  const UPDATE_PROJECT = gql`
+    const UPDATE_PROJECT = gql`
     mutation updateProject(
       $id: ID!
       $name: String
       $description: String
       $status: ProjectStatusUpdate
+      $clientId: String
     ) {
       updateProject(
         id: $id
         name: $name
         description: $description
         status: $status
+        clientId: $clientId
       ) {
         id
         name
         description
         status
+        clientId
       }
     }
   `;
 
-  return {
-    GET_PROJECTS,
-    GET_PROJECTID,
-    ADD_PROJECT,
-    DELETE_PROJECT,
-    UPDATE_PROJECT,
-  };
+    return {
+        GET_PROJECTS,
+        GET_PROJECTID,
+        ADD_PROJECT,
+        DELETE_PROJECT,
+        UPDATE_PROJECT,
+    };
 };
 export default projects;

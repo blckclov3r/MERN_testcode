@@ -11,7 +11,6 @@ const config: CodegenConfig = {
     },
   ],
   overwrite: true,
-  watch: true,
   generates: {
     "./src/generated/graphql.ts": {
       documents: ["src/**/*.tsx", "./src/queries/*.ts"],
