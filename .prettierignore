@@ -41,3 +41,4 @@ package-lock.json
 .eslintrc.json
 *.lock
 *.svg
+graphql.schema.json
