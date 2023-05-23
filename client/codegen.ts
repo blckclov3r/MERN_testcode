@@ -11,7 +11,7 @@ const config: CodegenConfig = {
         },
     ],
     overwrite: true,
-    ignoreNoDocuments: true,
+    watch: true,
     generates: {
         './src/generated/graphql.ts': {
             documents: [

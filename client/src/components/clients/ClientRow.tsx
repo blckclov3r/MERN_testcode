@@ -17,7 +17,6 @@ const ClientRow: React.FC<ClientRowProps> = (props) => {
         refetchQueries: [{query: GET_CLIENTS}]
     })
 
-
     return (
         <>
             <TableCell>{props.client?.id}</TableCell>

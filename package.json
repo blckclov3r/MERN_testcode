@@ -15,5 +15,7 @@
     "react-icons": "^4.8.0",
     "react-router-dom": "^6.11.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "prettier": "^2.8.8"
+  }
 }

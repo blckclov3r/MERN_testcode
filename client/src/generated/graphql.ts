@@ -162,7 +162,7 @@ export type GetProjectIdQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectIdQuery = { __typename?: 'RootQueryType', project?: { __typename?: 'Project', id?: string | null, name?: string | null, description?: string | null, status?: string | null, client?: { __typename?: 'Client', id?: string | null, name?: string | null, email?: string | null, phone?: string | null } | null } | null };
+export type GetProjectIdQuery = { __typename?: 'RootQueryType', project?: { __typename?: 'Project', id?: string | null, name?: string | null, description?: string | null, status?: string | null, clientId?: string | null } | null };
 
 export type AddProjectMutationVariables = Exact<{
   clientId: Scalars['ID'];
@@ -423,12 +423,7 @@ export const GetProjectIdDocument = gql`
     name
     description
     status
-    client {
-      id
-      name
-      email
-      phone
-    }
+    clientId
   }
 }
     `;
