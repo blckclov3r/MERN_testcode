@@ -111,7 +111,7 @@ const ClientsContainer = () => {
     return (
         <>
             <Box sx={{ my: 3 }}>
-                <Typography variant={'h3'}>Clients</Typography>
+                <Typography variant={'h4'}>Clients</Typography>
             </Box>
             <Button
                 variant={'contained'}

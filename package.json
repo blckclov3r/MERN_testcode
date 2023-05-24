@@ -1,4 +1,7 @@
 {
+  "name": "blckclov3r",
+  "version": "9.9.9",
+  "private": true,
   "scripts": {
     "predev": "npx kill-port 3000 8000",
     "dev": "concurrently \"yarn --cwd client dev\" \"yarn --cwd server dev\"",

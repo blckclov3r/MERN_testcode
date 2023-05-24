@@ -151,7 +151,7 @@ const ProjectContainer = () => {
     return (
         <>
             <Box sx={{ my: 3 }}>
-                <Typography variant={'h3'}>Projects</Typography>
+                <Typography variant={'h4'}>Projects</Typography>
             </Box>
             <Button
                 variant={'contained'}
