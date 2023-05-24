@@ -14,22 +14,23 @@ import Table from '@mui/material/Table';
 import ClientRow from '@/components/clients/ClientRow';
 import { Client } from '@/generated/graphql';
 import Button from '@mui/material/Button';
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import ClientModal from '@/components/clients/ClientModal';
 
 const ClientsContainer = () => {
     const [id, setId] = useState<string | null>(null);
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState<boolean>(false);
     const [name, setName] = useState<string | null>(null);
     const [email, setEmail] = useState<string | null>(null);
     const [phone, setPhone] = useState<string | null>(null);
+
     const { ADD_CLIENT, GET_CLIENTS, GET_CLIENTID, UPDATE_CLIENT, DELETE_CLIENT } = clients();
     const { data: dataClients } = useQuery(GET_CLIENTS);
     const { data: dataClient } = useQuery(GET_CLIENTID, {
         variables: {
             id,
         },
-        skip: id === '' || id === null,
+        skip: id === null,
     });
 
     const [addClient] = useMutation(ADD_CLIENT, {
@@ -58,21 +59,21 @@ const ClientsContainer = () => {
     });
 
     const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setName(event.target.value);
+        setName(event.target.value ?? '');
     };
 
     const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setEmail(event.target.value);
+        setEmail(event.target.value ?? '');
     };
 
     const handlePhoneChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setPhone(event.target.value);
+        setPhone(event.target.value ?? '');
     };
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         try {
-            if (id === '' || id === null) {
+            if (id === null) {
                 if (!name || !phone || !email) {
                     alert('Please fill in all fields');
                 }

@@ -15,31 +15,11 @@ import { Project } from '@/generated/graphql';
 import Button from '@mui/material/Button';
 import projects from '@/queries/projects';
 import ProjectRow from '@/components/projects/ProjectRow';
-import { ChangeEvent, FormEvent, useCallback, useMemo, useState } from 'react';
+import { ChangeEvent, FormEvent, useMemo, useState } from 'react';
 import ProjectModal from '@/components/projects/ProjectModal';
 import clients from '@/queries/clients';
+import { SelectOption, IProject, IClients } from '@/components/projects/types';
 
-export interface IProject {
-    id: string;
-    name?: string;
-    description?: string;
-    status?: string;
-    clientId: string;
-}
-
-export interface IClients {
-    __typename: string;
-    id: string;
-    name: string;
-    email: string;
-    phone: string;
-}
-
-export type SelectOption = {
-    id: number;
-    value: string;
-    label: string;
-};
 const clientIdOptions: SelectOption[] = [
     {
         id: 1,
@@ -57,6 +37,7 @@ const clientIdOptions: SelectOption[] = [
         label: 'Completed',
     },
 ];
+
 const ProjectContainer = () => {
     const [id, setId] = useState<string | null>(null);
     const [open, setOpen] = useState(false);
@@ -65,18 +46,15 @@ const ProjectContainer = () => {
     const [name, setName] = useState<string | null>(null);
     const [description, setDescription] = useState<string | null>(null);
 
-    const handleOpen = useCallback(
-        (id?: string) => {
-            setOpen(true);
-            setId(id ?? null);
-        },
-        [id],
-    );
+    const handleOpen = (id?: string) => {
+        setOpen(true);
+        setId(id ?? null);
+    };
 
-    const handleClose = useCallback(() => {
+    const handleClose = () => {
         setOpen(false);
         setId(null);
-    }, [id]);
+    };
 
     const { ADD_PROJECT, GET_PROJECTS, GET_PROJECTID, UPDATE_PROJECT } = projects();
     const { GET_CLIENTS } = clients();
@@ -163,7 +141,7 @@ const ProjectContainer = () => {
     const selectedStatus = useMemo(() => {
         return (
             clientIdOptions?.filter((x) => {
-                if (x.label === projectList?.project.status) {
+                if (x.label === projectList?.project?.status) {
                     return x;
                 }
             })[0]?.value ?? null

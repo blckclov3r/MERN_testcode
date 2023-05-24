@@ -10,6 +10,8 @@ const ClientSchema = new mongoose.Schema({
     phone: {
         type: String,
     },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
 });
 
 const client = mongoose.model('Client', ClientSchema);

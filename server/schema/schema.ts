@@ -20,6 +20,8 @@ const ClientType = new GraphQLObjectType({
         name: { type: GraphQLString },
         email: { type: GraphQLString },
         phone: { type: GraphQLString },
+        createdAt: { type: GraphQLString },
+        updatedAt: { type: GraphQLString },
     }),
 });
 
@@ -37,6 +39,8 @@ const ProjectType = new GraphQLObjectType({
                 return Client.findById(parent.clientId);
             },
         },
+        createdAt: { type: GraphQLString },
+        updatedAt: { type: GraphQLString },
     }),
 });
 
@@ -87,6 +91,8 @@ const mutation = new GraphQLObjectType({
                     name: args.name,
                     email: args.email,
                     phone: args.phone,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
                 });
                 return client.save();
             },
@@ -106,6 +112,7 @@ const mutation = new GraphQLObjectType({
                         name: args.name,
                         email: args.email,
                         phone: args.phone,
+                        updatedAt: new Date(),
                     },
                     { new: true }, // Return the updated client
                 );
@@ -145,6 +152,8 @@ const mutation = new GraphQLObjectType({
                     description: args.description,
                     status: args.status,
                     clientId: args.clientId,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
                 });
                 return project.save();
             },
@@ -184,6 +193,7 @@ const mutation = new GraphQLObjectType({
                         description: args.description,
                         status: args.status,
                         clientId: args.clientId,
+                        updatedAt: new Date(),
                     },
                     { new: true },
                 );

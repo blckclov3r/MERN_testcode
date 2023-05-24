@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { ChangeEvent, Dispatch, FormEvent, SetStateAction } from 'react';
 import Button from '@mui/material/Button';
-import { IClients, IProject, SelectOption } from '@/components/projects/ProjectsContainer';
+import { IClients, IProject, SelectOption } from './types';
 
 interface AddProjectProps {
     id: string | null;
@@ -74,15 +74,15 @@ const ProjectModal: React.FC<AddProjectProps> = (props) => {
                                 onChange={props.handleClientChange}
                                 value={
                                     (props?.clientId ||
-                                        (props.projectList?.project.clientId ?? '')) ??
+                                        (props.projectList?.project?.clientId ?? '')) ??
                                     null
                                 }
-                                defaultValue={props.projectList?.project.clientId ?? ''}
+                                defaultValue={props.projectList?.project?.clientId ?? ''}
                                 size={'small'}
                                 sx={{ my: 1 }}
                                 fullWidth={true}
                             >
-                                {props.clientsList?.clients.map((client) => (
+                                {props.clientsList?.clients?.map((client) => (
                                     <MenuItem key={client.id} value={client.id}>
                                         {client.name}
                                     </MenuItem>

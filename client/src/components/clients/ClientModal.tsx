@@ -4,13 +4,13 @@ import Button from '@mui/material/Button';
 import { useMutation, useQuery } from '@apollo/client';
 import clients from '@/queries/clients';
 
-interface Client {
+export interface Client {
     name: string;
     email: string;
     phone: string;
 }
 
-interface AddClientProps {
+export interface AddClientProps {
     handleClose: () => void;
     open: boolean;
     id?: string;
@@ -62,12 +62,12 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
                                 value={props.name ? props.name : undefined}
                                 onChange={props.handleNameChange}
                                 fullWidth
-                                defaultValue={props.dataClient?.client.name ?? undefined}
+                                defaultValue={props.dataClient?.client?.name ?? undefined}
                                 margin='normal'
                                 size='small'
                                 InputLabelProps={{
                                     shrink: (!!props.name ||
-                                        props.dataClient?.client.name) as boolean,
+                                        props.dataClient?.client?.name) as boolean,
                                 }}
                             />
                             <TextField
@@ -81,7 +81,7 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
                                 defaultValue={props.dataClient?.client.email ?? undefined}
                                 InputLabelProps={{
                                     shrink: (!!props.email ||
-                                        props.dataClient?.client.email) as boolean,
+                                        props.dataClient?.client?.email) as boolean,
                                 }}
                             />
                             <TextField
@@ -92,10 +92,10 @@ const ClientModal: React.FC<AddClientProps> = (props) => {
                                 fullWidth
                                 margin='normal'
                                 size='small'
-                                defaultValue={props.dataClient?.client.phone ?? undefined}
+                                defaultValue={props.dataClient?.client?.phone ?? undefined}
                                 InputLabelProps={{
                                     shrink: (!!props.phone ||
-                                        props.dataClient?.client.phone) as boolean,
+                                        props.dataClient?.client?.phone) as boolean,
                                 }}
                             />
 

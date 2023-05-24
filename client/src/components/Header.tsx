@@ -13,6 +13,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Container } from '@mui/material';
+import Link from "next/link";
 
 interface Props {
     /**
@@ -40,13 +41,13 @@ export default function DrawerAppBar(props: Props) {
             </Typography>
             <Divider />
             <List>
-                {navItems.map((item) => (
-                    <ListItem key={item} disablePadding>
+                <Link href={'/projects'}>
+                    <ListItem disablePadding>
                         <ListItemButton sx={{ textAlign: 'center' }}>
-                            <ListItemText primary={item} />
+                            <ListItemText primary={'Projects'} />
                         </ListItemButton>
                     </ListItem>
-                ))}
+                </Link>
             </List>
         </Box>
     );

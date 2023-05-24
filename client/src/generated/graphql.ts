@@ -2,15 +2,9 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = {
-    [K in keyof T]: T[K];
-};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-    [SubKey in K]?: Maybe<T[SubKey]>;
-};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-    [SubKey in K]: Maybe<T[SubKey]>;
-};
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -23,10 +17,12 @@ export type Scalars = {
 
 export type Client = {
     __typename?: 'Client';
+    createdAt?: Maybe<Scalars['String']>;
     email?: Maybe<Scalars['String']>;
     id?: Maybe<Scalars['ID']>;
     name?: Maybe<Scalars['String']>;
     phone?: Maybe<Scalars['String']>;
+    updatedAt?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -269,6 +265,7 @@ export type UpdateProjectMutation = {
         name?: string | null;
         description?: string | null;
         status?: string | null;
+        clientId?: string | null;
     } | null;
 };
 
@@ -738,6 +735,7 @@ export const UpdateProjectDocument = gql`
             name
             description
             status
+            clientId
         }
     }
 `;
